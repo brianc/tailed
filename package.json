@@ -1,0 +1,24 @@
+{
+  "author": "Brian M. Carlson <brian.m.carlson@gmail.com>",
+  "name": "tailed",
+  "description": "evented file tailing (tail -f + EventEmitter)",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brian/tailed.git"
+  },
+  "main": "lib/",
+  "scripts": {
+    "test": "node_modules/.bin/mocha -r should"
+  },
+  "engines": {
+    "node": "~0.6.11"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "optionalDependencies": {}
+}
