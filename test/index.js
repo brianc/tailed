@@ -32,18 +32,6 @@ describe('tailed', function() {
     })
   });
 
-  var check = function(text, cb) {
-    var tail = tailed(file, 'utf8', function(err) {
-      if(err) done(err);
-      tail.once('data', function(data) {
-        data.should.equal(text);
-        tail.close();
-        cb();
-      });
-      writeText(file, text);
-    });
-  };
-
   describe('ctor args', function() {
 
     it('requires valid filename', function() {
@@ -53,7 +41,7 @@ describe('tailed', function() {
     });
 
     it('defaults to utf8 encoding', function() {
-      tailed(file, function(err) {
+      var tail = tailed(file, function(err) {
         should.equal(null);
       });
     });
@@ -62,27 +50,14 @@ describe('tailed', function() {
   describe('canary test', function(){
 
     it('emits data', function(done) {
-      check('hi', done);
-    });
-  });
 
-
-  describe('multiple messages', function() {
-    return; 
-
-    it('should all be emitted', function(done) {
-      var tail = tailed(file, 'utf8', function(err) {
+      tailed(file, function(err, tail) {
         if(err) done(err);
-        tail.once('data', function(data) {
-          data.should.equal('one');
-          tail.once('data', function(data) {
-            data.should.equal('two');
-            done();
-          });
-          writeText(file, 'two');
-        });
-      });
-      writeText(file, 'one');
+        tail.close();
+        done();
+      })
+
     });
   });
+
 });
