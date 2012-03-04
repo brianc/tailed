@@ -6,6 +6,7 @@ var tailed = require(__dirname + '/../lib');
 
 var create = function(path) {
   var fd = fs.openSync(path, 'w');
+  fs.writeSync(fd, '', 0);
   fs.closeSync(fd);
   console.log('created %s', path);
 }
@@ -29,6 +30,7 @@ describe('tailed', function() {
 
     it('requires valid filename', function() {
       tailed('asdf', 'utf8', function(err) {
+        should.exist(err);
         err.should.not.equal(null);
       });
     });
@@ -37,8 +39,10 @@ describe('tailed', function() {
       var path = __dirname + '/x';
       create(path);
       tailed(path, function(err, tail) {
-        should.equal(null);
+        should.not.exist(err);
+        should.exist(tail);
         tail.should.not.equal(null)
+        tail.close();
         rm(path);
         done();
       });
