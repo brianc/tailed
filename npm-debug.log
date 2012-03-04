@@ -1,0 +1,54 @@
+info it worked if it ends with ok
+verbose cli [ 'node', '/Users/brian/local/node6/bin/npm', 'test' ]
+info using npm@1.0.106
+info using node@v0.6.7
+verbose config file /Users/brian/.npmrc
+verbose config file /Users/brian/local/node6/etc/npmrc
+verbose config file /Users/brian/local/node6/lib/node_modules/npm/npmrc
+silly testEngine { author: { name: 'Brian M. Carlson', email: 'brian.m.carlson@gmail.com' },
+silly testEngine   name: 'tailed',
+silly testEngine   description: 'evented file tailing (tail -f + EventEmitter)',
+silly testEngine   version: '0.0.0',
+silly testEngine   repository: { type: 'git', url: 'git://github.com/brian/tailed.git' },
+silly testEngine   main: 'lib/',
+silly testEngine   scripts: { test: 'node_modules/.bin/mocha -r should' },
+silly testEngine   engines: { node: '~0.6.11' },
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: { mocha: '*', should: '*' },
+silly testEngine   optionalDependencies: {},
+silly testEngine   _npmUser: { name: 'brianc', email: 'brian.m.carlson@gmail.com' },
+silly testEngine   _id: 'tailed@0.0.0',
+silly testEngine   _engineSupported: false,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.6.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/brian/src/tailed/package.json
+verbose loadDefaults tailed@0.0.0
+verbose run-script [ 'pretest', 'test', 'posttest' ]
+info pretest tailed@0.0.0
+info test tailed@0.0.0
+verbose unsafe-perm in lifecycle true
+silly exec sh "-c" "node_modules/.bin/mocha -r should"
+silly spawning [ 'sh',
+silly spawning   [ '-c', 'node_modules/.bin/mocha -r should' ],
+silly spawning   '/Users/brian/src/tailed' ]
+info tailed@0.0.0 Failed to exec test script
+ERR! tailed@0.0.0 test: `node_modules/.bin/mocha -r should`
+ERR! `sh "-c" "node_modules/.bin/mocha -r should"` failed with 2
+ERR! 
+ERR! Failed at the tailed@0.0.0 test script.
+ERR! This is most likely a problem with the tailed package,
+ERR! not with npm itself.
+ERR! Tell the author that this fails on your system:
+ERR!     node_modules/.bin/mocha -r should
+ERR! You can get their info via:
+ERR!     npm owner ls tailed
+ERR! There is likely additional logging output above.
+ERR! 
+ERR! System Darwin 11.3.0
+ERR! command "node" "/Users/brian/local/node6/bin/npm" "test"
+ERR! cwd /Users/brian/src/tailed
+ERR! node -v v0.6.7
+ERR! npm -v 1.0.106
+ERR! code ELIFECYCLE
+verbose exit [ 1, true ]
