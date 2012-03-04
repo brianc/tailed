@@ -33,13 +33,14 @@ describe('tailed', function() {
       });
     });
 
-    it('defaults to utf8 encoding', function() {
+    it('defaults to utf8 encoding', function(done) {
       var path = __dirname + '/x';
       create(path);
       tailed(path, function(err, tail) {
         should.equal(null);
         tail.should.not.equal(null)
         rm(path);
+        done();
       });
     });
   });
