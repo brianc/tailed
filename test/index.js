@@ -4,8 +4,10 @@ var fs = require('fs');
 var tailed = require(__dirname + '/../lib');
 
 var writeText = function(path, text) {
-  fs.writeFileSync(path, text, 'utf8');
-}
+  var fd = fs.openSync(path, 'a');
+  fs.writeSync(fd, text, fs.fstatSync(fd).size);
+  fs.closeSync(fd);
+};
 
 var file = path.join(__dirname, 'temp.txt');
 
@@ -15,9 +17,12 @@ describe('tailed', function() {
     writeText(file, '');
   });
 
-  afterEach(function() {
+  afterEach(function(done) {
     //delete the file
-    try{ fs.unlinkSync(file); } catch(e) { }
+    process.nextTick(function() {
+      try{ fs.unlinkSync(file); } catch(e) { console.error(e) }
+      done();
+    })
   });
 
   describe('canary test', function(){
@@ -36,6 +41,22 @@ describe('tailed', function() {
   });
 
   describe('multiple messages', function() {
+
+    it('should all be emitted', function(done) {
+      var tail = tailed(file, 'utf8', function(err) {
+        if(err) done(err);
+        tail.once('data', function(data) {
+          data.should.equal('one');
+          tail.once('data', function(data) {
+            data.should.equal('two');
+            done();
+          });
+          writeText(file, 'two');
+        });
+      });
+
+      writeText(file, 'one');
+    });
 
   });
 });
