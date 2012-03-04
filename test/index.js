@@ -11,6 +11,18 @@ var writeText = function(path, text) {
 
 var file = path.join(__dirname, 'temp.txt');
 
+var check = function(text, cb) {
+  var t = tailed(file, 'utf8', function(err) {
+    if(err) cb(err);
+    t.once('data', function(data) {
+      data.should.equal(text);
+      cb();
+    });
+    writeText(file, text);
+  });
+}
+
+
 describe('tailed', function() {
   beforeEach(function() {
     //ensure file exists
@@ -28,15 +40,7 @@ describe('tailed', function() {
   describe('canary test', function(){
 
     it('emits data', function(done) {
-      var tail = tailed(file, 'utf8', function(err) {
-        if(err) done(err);
-        tail.on('data', function(data) {
-          data.should.equal('hi');
-          tail.close();
-          done();
-        });
-        writeText(file, 'hi');
-      });
+      check('hi', done);
     });
   });
 
@@ -58,5 +62,11 @@ describe('tailed', function() {
       writeText(file, 'one');
     });
 
+  });
+
+  describe('huge message', function() {
+    it('is emitted', function(done) {
+      done();
+    });
   });
 });
