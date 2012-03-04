@@ -176,4 +176,25 @@ describe('tailed', function() {
     });
   });
 
+  describe('tailing a log file which gets deleted', function() {
+    var file = __dirname + '/deltorted.txt';
+
+    it('emits error', function(done) {
+      create(file);
+      tailed(file, function(err, tail) {
+        should.not.exist(err);
+        tail.once('data', function(data) {
+          data.should.equal('her');
+          log('received ' + data + '..deleting file');
+          tail.once('error',function(err) {
+            should.exist(err);
+            tail.close();
+            done();
+          });
+          rm(file);
+        });
+        write(file, 'her');
+      });
+    });
+  });
 });
