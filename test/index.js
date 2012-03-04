@@ -7,21 +7,22 @@ var writeText = function(path, text) {
   fs.writeFileSync(path, text, 'utf8');
 }
 
+var file = path.join(__dirname, 'temp.txt');
+
 describe('tailed', function() {
-  describe('tailing text file', function(){
+  beforeEach(function() {
+    //ensure file exists
+    writeText(file, '');
+  });
 
-    var file = path.join(__dirname, 'temp.txt');
-    beforeEach(function() {
-      writeText(file, '');
-    });
+  afterEach(function() {
+    //delete the file
+    try{ fs.unlinkSync(file); } catch(e) { }
+  });
 
-    afterEach(function() {
-      try{ fs.unlinkSync(file); } catch(e) { }
-    });
+  describe('canary test', function(){
 
-    
     it('emits data', function(done) {
-      console.log('beginning to tail');
       var tail = tailed(file, 'utf8', function(err) {
         if(err) done(err);
         tail.on('data', function(data) {
@@ -32,5 +33,9 @@ describe('tailed', function() {
         writeText(file, 'hi');
       });
     });
+  });
+
+  describe('multiple messages', function() {
+
   });
 });
