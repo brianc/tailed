@@ -1,5 +1,7 @@
 #tailed
 
+[![Build Status](https://secure.travis-ci.org/brianc/node-ami.png)](http://travis-ci.org/brianc/node-ami])
+
 ## _under development_
 
 ## example
