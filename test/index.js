@@ -41,8 +41,9 @@ describe('tailed', function() {
     });
 
     it('defaults to utf8 encoding', function() {
-      var tail = tailed(file, function(err) {
+      tailed(file, function(err, tail) {
         should.equal(null);
+        tail.should.not.equal(null)
       });
     });
   });
@@ -55,7 +56,7 @@ describe('tailed', function() {
         if(err) done(err);
         tail.close();
         done();
-      })
+      });
 
     });
   });
