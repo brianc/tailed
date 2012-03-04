@@ -4,23 +4,26 @@ var should = require('should');
 
 var tailed = require(__dirname + '/../lib');
 
+var log = console.log.bind(console);
+var log = function() { };
+
 var create = function(path) {
   var fd = fs.openSync(path, 'w');
   fs.writeSync(fd, '', 0);
   fs.closeSync(fd);
-  console.log('created %s', path);
+  log('created %s', path);
 }
 
 var write = function(path, text) {
   var fd = fs.openSync(path, 'a');
-  console.log('writing %s to %s', text, path);
+  log('writing %s to %s', text, path);
   fs.writeSync(fd, text, fs.fstatSync(fd).size);
   fs.closeSync(fd);
 };
 
 var rm = function(path) {
   fs.unlinkSync(path); 
-  console.log('deleted %s', path);
+  log('deleted %s', path);
 }
 
 var file = path.join(__dirname, 'temp.txt');
@@ -93,4 +96,84 @@ describe('tailed', function() {
       })
     });
   });
+});
+
+describe('tailed', function() {
+
+  var tail;
+  beforeEach(function(done) {
+    create(file);
+    tailed(file, function(err, t) {
+      if(err) done(err);
+      tail = t;
+      done();
+    });
+  });
+
+  afterEach(function(done) {
+    tail.close();
+    rm(file);
+    done();
+  });
+
+  describe('simple tailing', function() {
+    it('works', function(done) {
+      tail.on('data', function(data) {
+        data.should.equal('ok');
+        done();
+      });
+      write(file, 'ok');
+    });
+  });
+
+  describe('multiple-write tailing', function() {
+    it('receives all messages', function(done) {
+      tail.once('data', function(data) {
+        data.should.equal('one');
+        tail.once('data', function(data) {
+          data.should.equal('two');
+          done();
+        });
+        write(file, 'two');
+      });
+      write(file, 'one');
+    });
+  });
+
+  describe('tailing an existing file', function() {
+    it('emits new data only', function(done) {
+      write(file, 'one');
+      write(file, 'two');
+      //bah...ugly - need to let any potential listeners fire off
+      setTimeout(function() {
+        tail.once('data', function(data) {
+          data.should.equal('three');
+          done();
+        });
+        write(file, 'three');
+      }, 1000);
+    });
+  });
+
+  describe('tailing a file which receives a large write', function() {
+    it('emits all written data', function() {
+      var hugeData = '';
+      for(var i =0; i < 1000; i++) {
+        hugeData += [
+          'you say you\'ve got a real solution?',
+          'well you know, we\'d all love to see the plan',
+          'you ask me for my contribution?',
+          'well, you know, we\'re all doin\' what we can',
+          'but if you want money for people with minds that hate',
+          'all I can tell you is, brother, you have to wait'
+        ].join('\n');
+      }
+      tail.once('data', function(data) {
+        data.should.equal(hugeData);
+      });
+
+      write(file, hugeData);
+    });
+  });
+
 });
