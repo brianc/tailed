@@ -25,23 +25,27 @@ describe('tailed', function() {
     })
   });
 
+  var check = function(text, cb) {
+    var tail = tailed(file, 'utf8', function(err) {
+      if(err) done(err);
+      tail.once('data', function(data) {
+        data.should.equal(text);
+        tail.close();
+        cb();
+      });
+      writeText(file, text);
+    });
+  };
+
   describe('canary test', function(){
 
     it('emits data', function(done) {
-      var tail = tailed(file, 'utf8', function(err) {
-        if(err) done(err);
-        tail.on('data', function(data) {
-          data.should.equal('hi');
-          tail.close();
-          done();
-        });
-        writeText(file, 'hi');
-      });
+      check('hi', done);
     });
   });
 
-  describe('multiple messages', function() {
 
+  describe('multiple messages', function() {
     it('should all be emitted', function(done) {
       var tail = tailed(file, 'utf8', function(err) {
         if(err) done(err);
@@ -54,9 +58,7 @@ describe('tailed', function() {
           writeText(file, 'two');
         });
       });
-
       writeText(file, 'one');
     });
-
   });
 });
