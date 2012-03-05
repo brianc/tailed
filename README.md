@@ -9,9 +9,11 @@
 ```js
 var tailed = require('tailed');
 
-var logFilePath = require('path').join(__dirname, 'logs', 'debug.log');
-require('tailed')(logFilePath, function(err, tail){
-  if(err) { /*HANDLE ERROR*/ }
+var logFilePath = __dirname + '/logs/development.log';
+
+tailed(logFilePath, function(err, tail){
+  if(err) { /* error handling code */ }
+
   tail.on('data', function(data){
     console.log(data);
   });
