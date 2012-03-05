@@ -201,7 +201,6 @@ describe('tailed', function() {
   describe('tailing a log file which gets truncated', function() {
 
     it('emits data before and after truncation', function(done) {
-      return done();
       create(file);
       tailed(file, function(err, tail) {
         should.not.exist(err);
