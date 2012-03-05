@@ -2,7 +2,7 @@
   "author": "Brian M. Carlson <brian.m.carlson@gmail.com>",
   "name": "tailed",
   "description": "evented file tailing (tail -f + EventEmitter)",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/brian/tailed.git"
