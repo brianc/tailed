@@ -144,7 +144,7 @@ describe('tailed', function() {
     it('emits new data only', function(done) {
       write(file, 'one');
       write(file, 'two');
-      //bah...ugly - need to let any potential listeners fire off
+      //bah...ugly - need to let any potential OS events fire off
       setTimeout(function() {
         tail.once('data', function(data) {
           data.should.equal('three');
@@ -194,6 +194,30 @@ describe('tailed', function() {
           rm(file);
         });
         write(file, 'her');
+      });
+    });
+  });
+
+  describe('tailing a log file which gets truncated', function() {
+
+    it('emits data before and after truncation', function(done) {
+      return done();
+      create(file);
+      tailed(file, function(err, tail) {
+        should.not.exist(err);
+        tail.once('data', function(data) {
+          data.should.equal('before');
+          create(file);
+          var stat = fs.statSync(file);
+          stat.size.should.equal(0);
+          tail.once('data', function(data) {
+            data.should.equal('after');
+            tail.close();
+            done();
+          });
+          write(file, 'after');
+        });
+        write(file, 'before');
       });
     });
   });
